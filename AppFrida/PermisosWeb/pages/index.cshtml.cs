@@ -25,7 +25,7 @@ namespace PermisosWeb.Pages
         {
            
 
-            isInDB = db.Logins.Where(user => user.Usuario == Login.Usuario);
+            isInDB = db.Logins.Where(user => user.Usuario == Login.Usuario).Where( pass => pass.Password == Login.Password);
             if (isInDB.Any())
             {
                     
