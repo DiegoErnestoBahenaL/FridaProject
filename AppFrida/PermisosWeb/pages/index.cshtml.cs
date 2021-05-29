@@ -8,33 +8,32 @@ using System;
 
 namespace PermisosWeb.Pages
 {
-    public class LoginModel : PageModel
+    public class IndexModel : PageModel
     {
         [BindProperty]
         public Login Login {get; set;}
-        public IEnumerable<bool> isInDB { get; set; }
+        public IQueryable<Login> isInDB { get; set; }
 
         private Permisos db;
 
-        public LoginModel(Permisos injectedContext)
+        public IndexModel(Permisos injectedContext)
         {
             db = injectedContext;
         }
 
         public IActionResult OnPost()
         {
-            if(ModelState.IsValid)
-            {
+           
 
-                isInDB = db.Logins.Select(user => user.Usuario == Login.Usuario);
-                if (isInDB != null)
-                {
+            isInDB = db.Logins.Where(user => user.Usuario == Login.Usuario);
+            if (isInDB.Any())
+            {
                     
-                    return RedirectToPage("/permisos.html");
-                }
-                Console.WriteLine(isInDB);
-                
+                return RedirectToPage("/permisos");
             }
+              
+                
+         
             return Page();
       
         }

@@ -20,7 +20,7 @@ namespace PermisosWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            string dbPath = Path.Combine("../DataBase", "Permisos.db");
+            string dbPath = Path.Combine("../../DataBase", "Permisos.db");
             services.AddDbContext<Permisos>(
                 options => options.UseSqlite ($"Data Source= {dbPath}")
 
