@@ -1,21 +1,14 @@
 @page
-@functions
-{
-  public string DayName { get; set; }  
-  public int nomina { get; set; }
-  public void OnGet()
-  {
-    Model.DayName = DateTime.Now.ToString("dddd");
-  }
-}
+@model PermisosWeb.Pages.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 
         <div class="login-triangle"></div>
         
-        <h2 class="login-header">@Model.DayName</h2>
+        <h2 class="login-header">Permiso</h2>
       
-        <form class="login-container">
-          <p><input type="email" placeholder="Numero de nómina"></p>
+        <form class="login-container" method = "POST">
+          <p><input asp-for="Login.Usuario" placeholder="Numero de nómina"></p>
           <p><input type="password" placeholder="Contraseña"></p>
           <p><input type="submit" value="Iniciar sesión" class="boton"></p>
         </form>
