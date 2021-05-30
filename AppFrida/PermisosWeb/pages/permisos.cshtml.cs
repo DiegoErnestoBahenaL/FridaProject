@@ -16,6 +16,8 @@ namespace PermisosWeb.Pages
         public IEnumerable<string> apellidoPaterno { get; set; }
         public IEnumerable<string> apellidoMaterno { get; set; }
         public string nombreCompleto { get; set; }
+        public long Nomina { get; set; }
+        public string Fecha { get; set; }
         private Permisos db;
 
         public void OnGet(){
@@ -23,7 +25,8 @@ namespace PermisosWeb.Pages
             apellidoPaterno = db.Empleados.Where(pass => pass.NumeroDeNomina == IndexModel.Nomina).Select(s => s.ApellidoPaterno);
             apellidoMaterno = db.Empleados.Where(pass => pass.NumeroDeNomina == IndexModel.Nomina).Select(s => s.ApellidoMaterno);
             nombreCompleto = Nombre.First() + " " + apellidoPaterno.First() + " " + apellidoPaterno.First();
-            //+ apellidoPaterno.First + apellidoMaterno.First;
+            Nomina = IndexModel.Nomina;
+            Fecha = DateTime.Now.ToString("dd/MM/yyyy");
         }
 
         public PermisosModel(Permisos injectedContext)
