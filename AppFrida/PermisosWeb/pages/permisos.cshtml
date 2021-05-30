@@ -1,4 +1,6 @@
 @page
+@model PermisosWeb.Pages.PermisosModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
     <main class="contenedor">
         <h3 class="centrar-texto">Solicitud de permiso</h3>
 
@@ -6,7 +8,7 @@
         <form class="formulario">
             <div class="campo">
                 <label class="campo__label" for="nombre">Nombre del Trabajador(a):</label>
-                <label for="nombre">Brambila Santamaria Angel Emmanuel</label>
+                <label for="nombre">@Model.nombreCompleto</label>
             </div>
 
             <div class="campo">

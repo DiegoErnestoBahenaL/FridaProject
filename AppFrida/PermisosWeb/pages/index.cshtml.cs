@@ -13,7 +13,7 @@ namespace PermisosWeb.Pages
         [BindProperty]
         public Login Login {get; set;}
         public IQueryable<Login> isInDB { get; set; }
-
+        public static long Nomina { get; set; }
         private Permisos db;
 
         public IndexModel(Permisos injectedContext)
@@ -27,8 +27,8 @@ namespace PermisosWeb.Pages
 
             isInDB = db.Logins.Where(user => user.Usuario == Login.Usuario).Where( pass => pass.Password == Login.Password);
             if (isInDB.Any())
-            {
-                    
+            {  
+                Nomina = Login.Usuario;
                 return RedirectToPage("/permisos");
             }
               
