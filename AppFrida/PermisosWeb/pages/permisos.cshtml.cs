@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 
+
 namespace PermisosWeb.Pages
 {
     public class PermisosModel : PageModel 
@@ -17,7 +18,7 @@ namespace PermisosWeb.Pages
         public string apellidoPaterno { get; set; }
         public string  apellidoMaterno { get; set; }
 
-        public List<string> Permisos {get; set;}
+        
         public string Area {get; set;}
         public string nombreCompleto { get; set; }
         public long Nomina { get; set; }
@@ -63,7 +64,10 @@ namespace PermisosWeb.Pages
                 }
             ).ToList();
 
-         
+               
+             
+
+
             Nombre = queryEmpleado[0].Nombre;
             apellidoPaterno = queryEmpleado[0].apellidoPaterno;
             apellidoMaterno = queryEmpleado[0].apellidoMaterno;
@@ -102,4 +106,5 @@ namespace PermisosWeb.Pages
 
     }
 
+   
 }

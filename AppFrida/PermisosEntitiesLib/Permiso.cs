@@ -18,17 +18,17 @@ namespace PermisosEntitiesLib
         public long Empleado { get; set; }
         [Required]
         [Column("fechaElaboracion", TypeName = "DATE")]
-        public byte[] FechaElaboracion { get; set; }
+        public string FechaElaboracion { get; set; }
         [Required]
         [Column("fechaJustificacionInicio", TypeName = "DATE")]
-        public byte[] FechaJustificacionInicio { get; set; }
+        public string FechaJustificacionInicio { get; set; }
         [Required]
         [Column("fechaJustificacionFin", TypeName = "DATE")]
-        public byte[] FechaJustificacionFin { get; set; }
+        public string FechaJustificacionFin { get; set; }
         [Column("horaInicio", TypeName = "TIME")]
-        public byte[] HoraInicio { get; set; }
+        public string HoraInicio { get; set; }
         [Column("horaFin", TypeName = "TIME")]
-        public byte[] HoraFin { get; set; }
+        public string HoraFin { get; set; }
         [Column("estadoPermiso")]
         public long EstadoPermiso { get; set; }
         [Column("tipoPermiso")]
