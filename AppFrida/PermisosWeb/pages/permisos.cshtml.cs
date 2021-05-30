@@ -68,7 +68,7 @@ namespace PermisosWeb.Pages
             apellidoPaterno = queryEmpleado[0].apellidoPaterno;
             apellidoMaterno = queryEmpleado[0].apellidoMaterno;
             Area = queryEmpleado[0].Area;
-            nombreCompleto = Nombre + " " + apellidoPaterno + " " + apellidoPaterno;
+            nombreCompleto = Nombre + " " + apellidoPaterno + " " + apellidoMaterno;
             Nomina = IndexModel.Nomina;
             Fecha = DateTime.Now.ToString("dd/MM/yyyy");
 
