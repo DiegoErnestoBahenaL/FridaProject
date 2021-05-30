@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PermisosEntitiesLib;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 
@@ -12,21 +13,67 @@ namespace PermisosWeb.Pages
     {
         [BindProperty]
         public Empleado Empleado {get; set;}
-        public IEnumerable<string> Nombre { get; set; }
-        public IEnumerable<string> apellidoPaterno { get; set; }
-        public IEnumerable<string> apellidoMaterno { get; set; }
+        public string Nombre { get; set; }
+        public string apellidoPaterno { get; set; }
+        public string  apellidoMaterno { get; set; }
+
+        public List<string> Permisos {get; set;}
+        public string Area {get; set;}
         public string nombreCompleto { get; set; }
         public long Nomina { get; set; }
         public string Fecha { get; set; }
         private Permisos db;
 
         public void OnGet(){
-            Nombre = db.Empleados.Where(pass => pass.NumeroDeNomina == IndexModel.Nomina).Select(s => s.Nombres);
-            apellidoPaterno = db.Empleados.Where(pass => pass.NumeroDeNomina == IndexModel.Nomina).Select(s => s.ApellidoPaterno);
-            apellidoMaterno = db.Empleados.Where(pass => pass.NumeroDeNomina == IndexModel.Nomina).Select(s => s.ApellidoMaterno);
-            nombreCompleto = Nombre.First() + " " + apellidoPaterno.First() + " " + apellidoPaterno.First();
+
+            var queryEmpleado =
+            (    
+                from e in db.Empleados
+                join a in db.AreaTrabajos
+                on e.AreaTrabajo equals a.IdAreaEmpleado
+                where e.NumeroDeNomina == IndexModel.Nomina
+                select new 
+                { 
+                    Nombre = e.Nombres, 
+                    apellidoPaterno = e.ApellidoPaterno, 
+                    apellidoMaterno = e.ApellidoMaterno, 
+                    Area = a.DescripcionArea 
+                }
+            ).ToList();
+              
+
+            var queryPermisos = 
+            (
+                from p in db.Permiso
+                join tp in db.TipoPermisos
+                on p.TipoPermiso equals tp.IdTipoPermiso
+                join ep in db.EstadoPermisos
+                on p.EstadoPermiso equals ep.IdEstadoPermiso
+                where p.Empleado == IndexModel.Nomina
+                select new
+                {
+                    Folio = p.Folio,
+                    Tipo = tp.DescripcionPermiso,
+                    FechaElab = p.FechaElaboracion,
+                    FechaInicio = p.FechaJustificacionInicio,
+                    FechaFin = p.FechaJustificacionFin,
+                    HoraInicio = p.HoraInicio,
+                    HoraFin = p.HoraFin,
+                    Estado = ep.DescripcionEstado
+                }
+            ).ToList();
+
+         
+            Nombre = queryEmpleado[0].Nombre;
+            apellidoPaterno = queryEmpleado[0].apellidoPaterno;
+            apellidoMaterno = queryEmpleado[0].apellidoMaterno;
+            Area = queryEmpleado[0].Area;
+            nombreCompleto = Nombre + " " + apellidoPaterno + " " + apellidoPaterno;
             Nomina = IndexModel.Nomina;
             Fecha = DateTime.Now.ToString("dd/MM/yyyy");
+
+            
+
         }
 
         public PermisosModel(Permisos injectedContext)
