@@ -88,18 +88,22 @@
                 <th></th>
                 </tr>
             
-                <tr>
-                <td>0001</td>
-                <td>2 Horas</td>
-                <td>10/02/2020</td>
-                <td>10/02/2020</td>
-                <td>10/02/2020</td>
-                <td>13:00</td>
-                <td>15:00</td>
-                <td>En Espera</td>
-                <td> <input type="submit" value="✓" class="boton boton--primario"></td>
-                <td> <input type="submit" value="x" class="boton boton--primario"></td>
-                </tr>
+                        @foreach (var item in Model.listPermisos)
+                        {
+                            <tr>
+                            <td>@item.Folio</td>
+                            <td>@item.Tipo</td>
+                            <td>@item.FechaElab</td>
+                            <td>@item.FechaInicio</td>
+                            <td>@item.FechaFin</td>
+                            <td>@item.HoraInicio</td>
+                            <td>@item.HoraFin</td>
+                            <td>@item.Estado</td>
+                            <td> <input type="submit" value="✓" class="boton boton--primario"></td>
+                            <td> <input type="submit" value="x" class="boton boton--primario"></td>
+                            </tr>
+                        }
+                
             
             </table>
             <p></p>
