@@ -18,7 +18,7 @@ namespace PermisosWeb.Pages
         public string apellidoPaterno { get; set; }
         public string  apellidoMaterno { get; set; }
 
-        
+        public List<PermisosHandler> listPermisos {get; set;}
         public string Area {get; set;}
         public string nombreCompleto { get; set; }
         public long Nomina { get; set; }
@@ -64,9 +64,35 @@ namespace PermisosWeb.Pages
                 }
             ).ToList();
 
+                List<PermisosHandler>  listaPermisos = new List<PermisosHandler>();
                
-             
 
+                foreach (var item in queryPermisos)
+                {
+                    var p = new PermisosHandler () 
+                    {
+                        Folio = item.Folio.ToString(),
+                        Tipo = item.Tipo,
+                        FechaElab = item.FechaElab,
+                        FechaInicio = item.FechaInicio,
+                        FechaFin = item.FechaFin,
+                        HoraInicio = item.HoraInicio,
+                        HoraFin = item.HoraFin,
+                        Estado = item.Estado
+                    };
+                    try
+                    {
+                        listaPermisos.Add(p);
+                    }
+                    catch (System.Exception)
+                    {
+                        
+                        
+                    }
+                    
+                }
+
+            listPermisos = listaPermisos;
 
             Nombre = queryEmpleado[0].Nombre;
             apellidoPaterno = queryEmpleado[0].apellidoPaterno;
@@ -106,5 +132,25 @@ namespace PermisosWeb.Pages
 
     }
 
+    public class PermisosHandler
+    {
+
+        #nullable enable
+        public string Folio { get; set; }
+
+        public string Tipo { get; set; }
+        public string FechaElab { get; set; }
+
+        public string FechaInicio { get; set; }
+
+        public string FechaFin { get; set; }
+
+        public string? HoraInicio { get; set; }
+
+        public string? HoraFin { get; set; }
+
+        public string Estado { get; set; }
+
+    }
    
 }

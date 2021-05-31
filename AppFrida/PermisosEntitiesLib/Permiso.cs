@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-#nullable disable
+#nullable enable
 
 namespace PermisosEntitiesLib
 {
@@ -26,9 +26,9 @@ namespace PermisosEntitiesLib
         [Column("fechaJustificacionFin", TypeName = "DATE")]
         public string FechaJustificacionFin { get; set; }
         [Column("horaInicio", TypeName = "TIME")]
-        public string HoraInicio { get; set; }
+        public string? HoraInicio { get; set; }
         [Column("horaFin", TypeName = "TIME")]
-        public string HoraFin { get; set; }
+        public string? HoraFin { get; set; }
         [Column("estadoPermiso")]
         public long EstadoPermiso { get; set; }
         [Column("tipoPermiso")]
