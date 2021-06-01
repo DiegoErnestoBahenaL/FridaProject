@@ -40,11 +40,11 @@
                 <div class="fecha">
                     <div>
                         <label>Inicio:</label>
-                        <input asp-for="Permiso.FechaJustificacionInicio" lass="campo__field" type="date" id="start" name="trip-start" value="2020-02-10" min="2020-02-10" max="2050-12-31">
+                        <input asp-for="Permiso.FechaJustificacionInicio" asp-format="{0:DD/MM/YYYY}" class="campo__field" type="date"  min="2020-02-10" max="2050-12-31">
                     </div>
                     <div>
                         <label>Fin:</label>
-                        <input asp-for="Permiso.FechaJustificacionFin" lass="campo__field" type="date" id="start" name="trip-start" value="2020-02-10" min="2020-02-10" max="2050-12-31">
+                        <input asp-for="Permiso.FechaJustificacionFin" asp-format="{0:DD/MM/YYYY}" class="campo__field" type="date"  min="2020-02-10" max="2050-12-31">
                     </div>
                 </div>
             </div>
@@ -53,16 +53,13 @@
                 <label class="campo__label" for="horasJustificacion">Horas a justificar:</label>
                 <div class="fecha">
                     <div>
-                        <label>Inicio:</label>
-                        <select name="hora de inicio">
-                            <option asp-for="Permiso.HoraInicio" selected value="0"> Elige una opción </option>
-                            <option value="1">7:00</option>
-                            <option value="2">13:00</option> 
+                        <label asp-for="Permiso.HoraInicio">Hora:</label>
+                        <select asp-for="Permiso.HoraInicio">
+                            <option value="" disabled="" selected=""> Elige una opción </option>
+                            <option value="7:00">7:00</option>
+                            <option value="13:00">13:00</option> 
                         </select>
-                    </div>
-                    <div>
-                        <label>Fin:</label>
-                        <label>15:00</label>
+                        <span asp-validation-for="Permiso.HoraInicio"></span>
                     </div>
                 </div>
             </div>

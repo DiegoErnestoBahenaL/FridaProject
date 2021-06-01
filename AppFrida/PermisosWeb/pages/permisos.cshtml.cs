@@ -115,7 +115,10 @@ namespace PermisosWeb.Pages
 
         public IActionResult OnPost()
         {
-            long a = Permiso.TipoPermiso;
+            if(ModelState.IsValid){
+                
+               return RedirectToPage("/permiso"); 
+            }
                 
          
             return Page();
