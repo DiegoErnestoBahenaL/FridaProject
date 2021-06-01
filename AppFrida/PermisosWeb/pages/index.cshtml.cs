@@ -13,6 +13,8 @@ namespace PermisosWeb.Pages
         [BindProperty]
         public Login Login {get; set;}
         public IQueryable<Login> isInDB { get; set; }
+
+        public long tipoEmpleado {get; set;}
         public static long Nomina { get; set; }
         private Permisos db;
 
@@ -29,6 +31,22 @@ namespace PermisosWeb.Pages
             if (isInDB.Any())
             {  
                 Nomina = Login.Usuario;
+
+                var tipoEmpleadoQuery = 
+                (
+                    from t in db.Empleados 
+                    where t.NumeroDeNomina == IndexModel.Nomina
+
+                    select new
+                    {
+
+                        TipoEmpleado = t.TipoEmpleado
+                    }
+
+
+                ).ToList();
+
+                tipoEmpleado = tipoEmpleadoQuery[0].TipoEmpleado;
                 return RedirectToPage("/permisos");
             }
               
