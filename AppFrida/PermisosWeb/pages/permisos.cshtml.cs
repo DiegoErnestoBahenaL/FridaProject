@@ -12,8 +12,10 @@ namespace PermisosWeb.Pages
 {
     public class PermisosModel : PageModel 
     {
+        // [BindProperty]
+        // public Empleado Empleado {get; set;}
         [BindProperty]
-        public Empleado Empleado {get; set;}
+        public Permiso Permiso { get; set; }
         public string Nombre { get; set; }
         public string apellidoPaterno { get; set; }
         public string  apellidoMaterno { get; set; }
@@ -111,22 +113,14 @@ namespace PermisosWeb.Pages
             db = injectedContext;
         }
 
-        // public IActionResult OnPost()
-        // {
-           
-
-        //     isInDB = db.Logins.Where(user => user.Usuario == Login.Usuario).Where( pass => pass.Password == Login.Password);
-        //     if (isInDB.Any())
-        //     {
-                    
-        //         return RedirectToPage("/permisos");
-        //     }
-              
+        public IActionResult OnPost()
+        {
+            long a = Permiso.TipoPermiso;
                 
          
-        //     return Page();
+            return Page();
       
-        // }
+        }
   
 
 

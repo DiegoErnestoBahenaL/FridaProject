@@ -3,9 +3,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
     <main class="contenedor">
         <h3 class="centrar-texto">Solicitud de permiso</h3>
-
-        @* <div class="permiso-bg"></div> *@
-        <form class="formulario">
+        <form class="formulario" method="POST">
             <div class="campo">
                 <label class="campo__label" for="nombre">Nombre del Trabajador(a):</label>
                 <label for="nombre">@Model.nombreCompleto</label>
@@ -27,13 +25,14 @@
             </div>
 
             <div class="campo">
-                <label class="campo__label" for="justificacion">Tipo de Justificación:</label>
-                    <select name="justificacion">
-                        <option selected value="0"> Elige una opción </option>
-                        <option value="1">Permiso 2 Horas</option>
-                        <option value="2">Permiso Económico</option> 
-                        <option value="3">Permiso Cumpleaños</option> 
+                <label asp-for="Permiso.TipoPermiso" class="campo__label">Tipo de Justificación:</label>
+                    <select asp-for="Permiso.TipoPermiso">
+                        <option value="" disabled="" selected=""> Elige una opción </option>
+                        <option value="1">Permiso Económico</option> 
+                        <option value="2">Permiso Cumpleaños</option> 
+                        <option value="3">Permiso 2 Horas</option>
                     </select>
+                    <span asp-validation-for="Permiso.TipoPermiso"></span>
             </div>
 
             <div class="campo">
@@ -41,11 +40,11 @@
                 <div class="fecha">
                     <div>
                         <label>Inicio:</label>
-                        <input lass="campo__field" type="date" id="start" name="trip-start" value="2020-02-10" min="2020-02-10" max="2050-12-31">
+                        <input asp-for="Permiso.FechaJustificacionInicio" lass="campo__field" type="date" id="start" name="trip-start" value="2020-02-10" min="2020-02-10" max="2050-12-31">
                     </div>
                     <div>
                         <label>Fin:</label>
-                        <input lass="campo__field" type="date" id="start" name="trip-start" value="2020-02-10" min="2020-02-10" max="2050-12-31">
+                        <input asp-for="Permiso.FechaJustificacionFin" lass="campo__field" type="date" id="start" name="trip-start" value="2020-02-10" min="2020-02-10" max="2050-12-31">
                     </div>
                 </div>
             </div>
@@ -56,7 +55,7 @@
                     <div>
                         <label>Inicio:</label>
                         <select name="hora de inicio">
-                            <option selected value="0"> Elige una opción </option>
+                            <option asp-for="Permiso.HoraInicio" selected value="0"> Elige una opción </option>
                             <option value="1">7:00</option>
                             <option value="2">13:00</option> 
                         </select>
