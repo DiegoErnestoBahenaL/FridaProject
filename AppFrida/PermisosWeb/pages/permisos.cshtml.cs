@@ -116,12 +116,26 @@ namespace PermisosWeb.Pages
         public IActionResult OnPost()
         {
            
-                if (Permiso.HoraInicio == "7:00")
-                Permiso.HoraFin = "9:00";
-                else
-                Permiso.HoraFin = "15:00";
-                
+                          
+               
 
+                if (Permiso.HoraInicio == "7:00")
+                {
+                Permiso.HoraFin = "9:00";
+                }
+                else if (Permiso.HoraInicio == "9:00")
+                {
+                Permiso.HoraFin = "15:00";
+                }
+                else
+                {
+                    Permiso.HoraFin = null;
+                }
+
+                Permiso.FechaJustificacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).ToString("dd/MM/yyyy");
+                Permiso.FechaJustificacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).ToString("dd/MM/yyyy");
+
+                 
                 Permiso.FechaElaboracion = DateTime.Now.ToString("dd/MM/yyyy"); 
                 Permiso.Empleado = IndexModel.Nomina;
                 Permiso.EstadoPermiso = 3; //Solicitado
@@ -138,6 +152,9 @@ namespace PermisosWeb.Pages
 
 
     }
+
+ 
+  
 
     public class PermisosHandler
     {
