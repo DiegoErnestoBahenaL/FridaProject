@@ -115,13 +115,23 @@ namespace PermisosWeb.Pages
 
         public IActionResult OnPost()
         {
-            if(ModelState.IsValid){
+           
+                if (Permiso.HoraInicio == "7:00")
+                Permiso.HoraFin = "9:00";
+                else
+                Permiso.HoraFin = "15:00";
                 
-               return RedirectToPage("/permiso"); 
-            }
+
+                Permiso.FechaElaboracion = DateTime.Now.ToString("dd/MM/yyyy"); 
+                Permiso.Empleado = IndexModel.Nomina;
+                Permiso.EstadoPermiso = 3; //Solicitado
+                db.Permiso.Add(Permiso);
+                db.SaveChanges();
+               return RedirectToPage("/permisos"); 
+          
                 
          
-            return Page();
+             
       
         }
   
