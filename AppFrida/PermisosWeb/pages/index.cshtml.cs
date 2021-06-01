@@ -14,7 +14,7 @@ namespace PermisosWeb.Pages
         public Login Login {get; set;}
         public IQueryable<Login> isInDB { get; set; }
 
-        public long tipoEmpleado {get; set;}
+        public static long tipoEmpleado {get; set;}
         public static long Nomina { get; set; }
         private Permisos db;
 

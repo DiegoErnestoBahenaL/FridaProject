@@ -80,8 +80,10 @@
                 <th>Hora Inicio</th>
                 <th>Hora Fin</th>
                 <th>Estado</th>
-                <th></th>
-                <th></th>
+                @if(Model.tipoEmpleado == 1){
+                    <th></th>
+                    <th></th>
+                }
                 </tr>
             
                         @foreach (var item in Model.listPermisos)
@@ -95,8 +97,10 @@
                             <td>@item.HoraInicio</td>
                             <td>@item.HoraFin</td>
                             <td>@item.Estado</td>
-                            <td> <input type="submit" value="✓" class="boton boton--primario"></td>
-                            <td> <input type="submit" value="x" class="boton boton--primario"></td>
+                            @if(Model.tipoEmpleado == 1){
+                                <td> <input type="submit" value="✓" class="boton boton--primario"></td>
+                                <td> <input type="submit" value="x" class="boton boton--primario"></td>
+                            }
                             </tr>
                         }
                 

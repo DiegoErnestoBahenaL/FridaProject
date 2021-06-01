@@ -19,11 +19,11 @@ namespace PermisosWeb.Pages
         public string Nombre { get; set; }
         public string apellidoPaterno { get; set; }
         public string  apellidoMaterno { get; set; }
-
         public List<PermisosHandler> listPermisos {get; set;}
         public string Area {get; set;}
         public string nombreCompleto { get; set; }
         public long Nomina { get; set; }
+        public long tipoEmpleado {get; set;}
         public string Fecha { get; set; }
         private Permisos db;
 
@@ -102,6 +102,8 @@ namespace PermisosWeb.Pages
             Area = queryEmpleado[0].Area;
             nombreCompleto = Nombre + " " + apellidoPaterno + " " + apellidoMaterno;
             Nomina = IndexModel.Nomina;
+            tipoEmpleado = IndexModel.tipoEmpleado;
+
             Fecha = DateTime.Now.ToString("dd/MM/yyyy");
 
             
