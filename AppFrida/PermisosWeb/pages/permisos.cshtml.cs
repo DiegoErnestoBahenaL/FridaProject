@@ -131,7 +131,11 @@ namespace PermisosWeb.Pages
 
         public IActionResult OnPostCancelarPermisoEmpleado(int folio)
         {
-    
+            
+            IEnumerable<Permiso> permisoDelete = db.Permiso.Where(pd => pd.Folio == folio);
+            db.RemoveRange(permisoDelete);
+            int affectedRows = db.SaveChanges();
+
             return RedirectToPage("/permisos");
         }
 
