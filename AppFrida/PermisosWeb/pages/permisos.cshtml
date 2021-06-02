@@ -80,9 +80,17 @@
                 <th>Hora Inicio</th>
                 <th>Hora Fin</th>
                 <th>Estado</th>
-                @if(Model.tipoEmpleado == 1){
-                    <th></th>
-                    <th></th>
+                @if (Model.tipoEmpleado == 4){
+                    <th>Cancelar permiso</th>
+                }
+
+                else if(Model.tipoEmpleado == 1){
+                    <th>Aceptar Permiso</th>
+                    <th>Rechazar Permiso</th>
+                }
+                  else if(Model.tipoEmpleado == 2){
+                    <th>Aceptar Permiso</th>
+                    <th>Rechazar Permiso</th>
                 }
                 </tr>
             
@@ -98,6 +106,14 @@
                             <td>@item.HoraFin</td>
                             <td>@item.Estado</td>
                             @if(Model.tipoEmpleado == 1){
+                                <td> <input type="submit" value="✓" class="boton boton--primario"></td>
+                                <td> <input type="submit" value="x" class="boton boton--primario"></td>
+                            }
+                            else if (Model.tipoEmpleado == 4){
+                                <td> <input  type="submit" value="x" class="boton boton--primario"></td>
+                                 
+                            }
+                            else if (Model.tipoEmpleado == 2){
                                 <td> <input type="submit" value="✓" class="boton boton--primario"></td>
                                 <td> <input type="submit" value="x" class="boton boton--primario"></td>
                             }

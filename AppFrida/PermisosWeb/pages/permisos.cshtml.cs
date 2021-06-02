@@ -25,6 +25,7 @@ namespace PermisosWeb.Pages
         public long Nomina { get; set; }
         public long tipoEmpleado {get; set;}
         public string Fecha { get; set; }
+        public long Estado {get; set;}
         private Permisos db;
 
         public void OnGet(){
