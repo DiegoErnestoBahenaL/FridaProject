@@ -88,7 +88,6 @@ namespace PermisosWeb.Pages
             }
 
             listPermisos = listaPermisos;
-
             Nombre = queryEmpleado[0].Nombre;
             apellidoPaterno = queryEmpleado[0].apellidoPaterno;
             apellidoMaterno = queryEmpleado[0].apellidoMaterno;
@@ -96,11 +95,7 @@ namespace PermisosWeb.Pages
             nombreCompleto = Nombre + " " + apellidoPaterno + " " + apellidoMaterno;
             Nomina = IndexModel.Nomina;
             tipoEmpleado = IndexModel.tipoEmpleado;
-
             Fecha = DateTime.Now.ToString("dd/MM/yyyy");
-
-
-
         }
 
         public PermisosModel(Permisos injectedContext)
@@ -108,7 +103,7 @@ namespace PermisosWeb.Pages
             db = injectedContext;
         }
 
-        public IActionResult OnPostEnviarLista()
+        public IActionResult OnPostEnviarPermiso()
         {
             if (Permiso.HoraInicio == "7:00")
             {
@@ -134,8 +129,14 @@ namespace PermisosWeb.Pages
             return RedirectToPage("/permisos");
         }
 
-    }
+        public IActionResult OnPostCancelarPermisoEmpleado(int folio)
+        {
     
+            return RedirectToPage("/permisos");
+        }
+
+    }
+
     public class PermisosHandler
     {
 

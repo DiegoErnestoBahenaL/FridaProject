@@ -67,7 +67,7 @@
         </div>
 
         <div class="alinear-derecha">
-            <input type="submit" asp-page-handler="EnviarLista" value="enviar" class="boton boton--primario">
+            <input type="submit" asp-page-handler="EnviarPermiso" value="enviar" class="boton boton--primario">
         </div>
 
         <table class="campo">
@@ -106,7 +106,7 @@
                     <td>@item.Estado</td>
                     @if (Model.tipoEmpleado == 4)
                     {
-                        <td> <input type="submit" value="x" class="boton boton--primario"></td>
+                        <td> <input type="submit" asp-page-handler="CancelarPermisoEmpleado"  asp-route-folio=@item.Folio value="x" class="boton boton--primario"></td>
                     }
                     else
                     {
