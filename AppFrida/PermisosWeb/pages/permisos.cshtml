@@ -110,9 +110,18 @@
                     }
                     else
                     {
-                        <td>@*@item.Nomina*@21832</td>
-                        <td> <input type="submit" value="✓" class="boton boton--primario"></td>
-                        <td> <input type="submit" value="x" class="boton boton--primario"></td>
+                        <td>@item.Nomina</td>
+                        @if ((item.Estado == "Solicitado" )|| (item.Estado == "Aprobado (Supervisor)"))
+                        {
+                        <td> <input type="submit" asp-page-handler="AceptarPermiso" asp-route-folio=@item.Folio value="✓" class="boton boton--primario"></td>
+                        <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x" class="boton boton--primario"></td>
+                        }
+                        else
+                        {
+                            <td> </td>
+                            <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x" class="boton boton--primario"></td>
+
+                        }
                     }
                 </tr>
             }
@@ -121,7 +130,7 @@
         </table>
         <p></p>
         <div class="alinear-derecha">
-            <input type="submit" value="Salir" class="boton boton--primario">
+            <input type="submit" asp-page-handler="Salir" value="Salir" class="boton boton--primario">
         </div>
     </form>
 </main>
