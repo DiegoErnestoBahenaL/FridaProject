@@ -22,6 +22,7 @@ namespace PermisosWeb.Pages
         public string apellidoMaterno { get; set; }
         public List<PermisosHandler> listPermisos { get; set; }
         public string Area { get; set; }
+        public long idArea {get; set;}
         public string nombreCompleto { get; set; }
         public long Nomina { get; set; }
         public long tipoEmpleado { get; set; }
@@ -43,14 +44,26 @@ namespace PermisosWeb.Pages
                     Nombre = e.Nombres,
                     apellidoPaterno = e.ApellidoPaterno,
                     apellidoMaterno = e.ApellidoMaterno,
-                    Area = a.DescripcionArea
+                    Area = a.DescripcionArea,
+                    idArea = a.IdAreaEmpleado
                 }
             ).ToList();
             tipoEmpleado = IndexModel.tipoEmpleado;
+            Nombre = queryEmpleado[0].Nombre;
+            apellidoPaterno = queryEmpleado[0].apellidoPaterno;
+            apellidoMaterno = queryEmpleado[0].apellidoMaterno;
+            Area = queryEmpleado[0].Area;
+            nombreCompleto = Nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+            Nomina = IndexModel.Nomina;
+            idArea = queryEmpleado[0].idArea;
+           
+            Fecha = DateTime.Now.ToString("dd/MM/yyyy");
 
             switch (tipoEmpleado)
             {
                 case 1:
+
+                
                     var queryPermisosDir =
                     (
                         from p in db.Permiso
@@ -60,7 +73,7 @@ namespace PermisosWeb.Pages
                         on p.EstadoPermiso equals ep.IdEstadoPermiso
                         join emp in db.Empleados
                         on p.Empleado equals emp.NumeroDeNomina
-                        where (p.EstadoPermiso == 4 || (emp.NumeroDeNomina == IndexModel.Nomina && p.EstadoPermiso == 1 ) ) 
+                        where (p.EstadoPermiso == 4 || (emp.NumeroDeNomina == IndexModel.Nomina) ) 
                          
                         select new
                         {
@@ -99,7 +112,59 @@ namespace PermisosWeb.Pages
 
 
                 break;
+                case 2:
+                case 3:
 
+ 
+                     var queryPermisosSup =
+                    (
+                        from p in db.Permiso
+                        join tp in db.TipoPermisos
+                        on p.TipoPermiso equals tp.IdTipoPermiso
+                        join ep in db.EstadoPermisos
+                        on p.EstadoPermiso equals ep.IdEstadoPermiso
+                        join emp in db.Empleados
+                        on p.Empleado equals emp.NumeroDeNomina
+                        where ((p.EstadoPermiso == 3 && emp.AreaTrabajo == idArea)  || (emp.NumeroDeNomina == IndexModel.Nomina )) 
+                         
+                        select new
+                        {
+                            Folio = p.Folio,
+                            Tipo = tp.DescripcionPermiso,
+                            FechaElab = p.FechaElaboracion,
+                            FechaInicio = p.FechaJustificacionInicio,
+                            FechaFin = p.FechaJustificacionFin,
+                            HoraInicio = p.HoraInicio,
+                            HoraFin = p.HoraFin,
+                            Estado = ep.DescripcionEstado,
+                            Nomina = emp.NumeroDeNomina
+                        }
+                    ).ToList();
+
+                    List<PermisosHandler> listaPermisosSup = new List<PermisosHandler>();
+
+                    foreach (var item in queryPermisosSup)
+                    {
+                        var p = new PermisosHandler()
+                        {
+                            Folio = item.Folio.ToString(),
+                            Tipo = item.Tipo,
+                            FechaElab = item.FechaElab,
+                            FechaInicio = item.FechaInicio,
+                            FechaFin = item.FechaFin,
+                            HoraInicio = item.HoraInicio,
+                            HoraFin = item.HoraFin,
+                            Estado = item.Estado,
+                            Nomina = item.Nomina.ToString()
+                        };
+                        listaPermisosSup.Add(p);
+                    }
+
+                    listPermisos = listaPermisosSup;
+
+
+
+                break;
                 case 4:
                     var queryPermisos =
                     (
@@ -143,14 +208,7 @@ namespace PermisosWeb.Pages
                     listPermisos = listaPermisos;
                 break;
             }
-            Nombre = queryEmpleado[0].Nombre;
-            apellidoPaterno = queryEmpleado[0].apellidoPaterno;
-            apellidoMaterno = queryEmpleado[0].apellidoMaterno;
-            Area = queryEmpleado[0].Area;
-            nombreCompleto = Nombre + " " + apellidoPaterno + " " + apellidoMaterno;
-            Nomina = IndexModel.Nomina;
-           
-            Fecha = DateTime.Now.ToString("dd/MM/yyyy");
+   
         }
 
         public PermisosModel(Permisos injectedContext)
@@ -203,16 +261,35 @@ namespace PermisosWeb.Pages
 
         public IActionResult OnPostAceptarPermiso (int folio)
         {
+            if (IndexModel.tipoEmpleado == 1)
+            {
             Permiso aceptarPermiso = db.Permiso.First(pd => pd.Folio == folio);
             aceptarPermiso.EstadoPermiso = 1;
             int affected = db.SaveChanges();
-            
             return RedirectToPage("/permisos");
+            }
+            else
+            {
+                Permiso aceptarPermiso = db.Permiso.First(pd => pd.Folio == folio);
+                aceptarPermiso.EstadoPermiso = 4;
+                int affected = db.SaveChanges();
+                return RedirectToPage("/permisos");
+            }
         }
 
         public IActionResult OnPostCancelarPermiso (int folio)
         {
+                
+
             Permiso aceptarPermiso = db.Permiso.First(pd => pd.Folio == folio);
+            if(aceptarPermiso.Empleado == IndexModel.Nomina)
+            {
+                    
+                IEnumerable<Permiso> permisoDelete = db.Permiso.Where(pd => pd.Folio == folio);
+                db.RemoveRange(permisoDelete);
+                int affectedRows = db.SaveChanges();
+                return RedirectToPage("/permisos");
+            }
             aceptarPermiso.EstadoPermiso = 2;
             int affected = db.SaveChanges();
             
