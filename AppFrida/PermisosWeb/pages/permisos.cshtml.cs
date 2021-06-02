@@ -5,12 +5,13 @@ using PermisosEntitiesLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Threading.Tasks;
 
 
 
 namespace PermisosWeb.Pages
 {
-    public class PermisosModel : PageModel 
+    public class PermisosModel : PageModel
     {
         // [BindProperty]
         // public Empleado Empleado {get; set;}
@@ -18,35 +19,36 @@ namespace PermisosWeb.Pages
         public Permiso Permiso { get; set; }
         public string Nombre { get; set; }
         public string apellidoPaterno { get; set; }
-        public string  apellidoMaterno { get; set; }
-        public List<PermisosHandler> listPermisos {get; set;}
-        public string Area {get; set;}
+        public string apellidoMaterno { get; set; }
+        public List<PermisosHandler> listPermisos { get; set; }
+        public string Area { get; set; }
         public string nombreCompleto { get; set; }
         public long Nomina { get; set; }
-        public long tipoEmpleado {get; set;}
+        public long tipoEmpleado { get; set; }
         public string Fecha { get; set; }
-        public long Estado {get; set;}
+        public long Estado { get; set; }
         private Permisos db;
 
-        public void OnGet(){
+        public void OnGet()
+        {
 
             var queryEmpleado =
-            (    
+            (
                 from e in db.Empleados
                 join a in db.AreaTrabajos
                 on e.AreaTrabajo equals a.IdAreaEmpleado
                 where e.NumeroDeNomina == IndexModel.Nomina
-                select new 
-                { 
-                    Nombre = e.Nombres, 
-                    apellidoPaterno = e.ApellidoPaterno, 
-                    apellidoMaterno = e.ApellidoMaterno, 
-                    Area = a.DescripcionArea 
+                select new
+                {
+                    Nombre = e.Nombres,
+                    apellidoPaterno = e.ApellidoPaterno,
+                    apellidoMaterno = e.ApellidoMaterno,
+                    Area = a.DescripcionArea
                 }
             ).ToList();
-              
 
-            var queryPermisos = 
+
+            var queryPermisos =
             (
                 from p in db.Permiso
                 join tp in db.TipoPermisos
@@ -67,33 +69,23 @@ namespace PermisosWeb.Pages
                 }
             ).ToList();
 
-                List<PermisosHandler>  listaPermisos = new List<PermisosHandler>();
-               
+            List<PermisosHandler> listaPermisos = new List<PermisosHandler>();
 
-                foreach (var item in queryPermisos)
+            foreach (var item in queryPermisos)
+            {
+                var p = new PermisosHandler()
                 {
-                    var p = new PermisosHandler () 
-                    {
-                        Folio = item.Folio.ToString(),
-                        Tipo = item.Tipo,
-                        FechaElab = item.FechaElab,
-                        FechaInicio = item.FechaInicio,
-                        FechaFin = item.FechaFin,
-                        HoraInicio = item.HoraInicio,
-                        HoraFin = item.HoraFin,
-                        Estado = item.Estado
-                    };
-                    try
-                    {
-                        listaPermisos.Add(p);
-                    }
-                    catch (System.Exception)
-                    {
-                        
-                        
-                    }
-                    
-                }
+                    Folio = item.Folio.ToString(),
+                    Tipo = item.Tipo,
+                    FechaElab = item.FechaElab,
+                    FechaInicio = item.FechaInicio,
+                    FechaFin = item.FechaFin,
+                    HoraInicio = item.HoraInicio,
+                    HoraFin = item.HoraFin,
+                    Estado = item.Estado
+                };
+                listaPermisos.Add(p);
+            }
 
             listPermisos = listaPermisos;
 
@@ -107,7 +99,7 @@ namespace PermisosWeb.Pages
 
             Fecha = DateTime.Now.ToString("dd/MM/yyyy");
 
-            
+
 
         }
 
@@ -116,53 +108,38 @@ namespace PermisosWeb.Pages
             db = injectedContext;
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPostEnviarLista()
         {
-           
-                          
-               
-
-                if (Permiso.HoraInicio == "7:00")
-                {
+            if (Permiso.HoraInicio == "7:00")
+            {
                 Permiso.HoraFin = "9:00";
-                }
-                else if (Permiso.HoraInicio == "9:00")
-                {
+            }
+            else if (Permiso.HoraInicio == "9:00")
+            {
                 Permiso.HoraFin = "15:00";
-                }
-                else
-                {
-                    Permiso.HoraFin = null;
-                }
+            }
+            else
+            {
+                Permiso.HoraFin = null;
+            }
 
-                Permiso.FechaJustificacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).ToString("dd/MM/yyyy");
-                Permiso.FechaJustificacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).ToString("dd/MM/yyyy");
+            Permiso.FechaJustificacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).ToString("dd/MM/yyyy");
+            Permiso.FechaJustificacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).ToString("dd/MM/yyyy");
 
-                 
-                Permiso.FechaElaboracion = DateTime.Now.ToString("dd/MM/yyyy"); 
-                Permiso.Empleado = IndexModel.Nomina;
-                Permiso.EstadoPermiso = 3; //Solicitado
-                db.Permiso.Add(Permiso);
-                db.SaveChanges();
-               return RedirectToPage("/permisos"); 
-          
-                
-         
-             
-      
+            Permiso.FechaElaboracion = DateTime.Now.ToString("dd/MM/yyyy");
+            Permiso.Empleado = IndexModel.Nomina;
+            Permiso.EstadoPermiso = 3; //Solicitado
+            db.Permiso.Add(Permiso);
+            db.SaveChanges();
+            return RedirectToPage("/permisos");
         }
-  
-
 
     }
-
- 
-  
-
+    
     public class PermisosHandler
     {
 
-        #nullable enable
+#nullable enable
         public string Folio { get; set; }
 
         public string Tipo { get; set; }
@@ -179,5 +156,5 @@ namespace PermisosWeb.Pages
         public string Estado { get; set; }
 
     }
-   
+
 }

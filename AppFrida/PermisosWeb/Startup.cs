@@ -22,10 +22,10 @@ namespace PermisosWeb
             services.AddRazorPages();
             string dbPath = Path.Combine("../../DataBase", "Permisos.db");
             services.AddDbContext<Permisos>(
-                options => options.UseSqlite ($"Data Source= {dbPath}")
+                options => options.UseSqlite($"Data Source= {dbPath}")
 
             );
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
