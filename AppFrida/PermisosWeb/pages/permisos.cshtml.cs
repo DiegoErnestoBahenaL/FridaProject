@@ -238,7 +238,7 @@ namespace PermisosWeb.Pages
             Permiso.Empleado = IndexModel.Nomina;
             if (IndexModel.tipoEmpleado == 1)
             {
-                Permiso.EstadoPermiso = 4; 
+                Permiso.EstadoPermiso = 4; //Aprobado por el supervisor
             }
             else
             {
@@ -264,7 +264,7 @@ namespace PermisosWeb.Pages
             if (IndexModel.tipoEmpleado == 1)
             {
             Permiso aceptarPermiso = db.Permiso.First(pd => pd.Folio == folio);
-            aceptarPermiso.EstadoPermiso = 1;
+            aceptarPermiso.EstadoPermiso = 1; //Aceptado por el director
             int affected = db.SaveChanges();
             return RedirectToPage("/permisos");
             }
