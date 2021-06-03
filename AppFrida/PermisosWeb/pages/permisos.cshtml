@@ -106,20 +106,24 @@
                     <td>@item.Estado</td>
                     @if (Model.tipoEmpleado == 4)
                     {
-                        <td> <input type="submit" asp-page-handler="CancelarPermisoEmpleado"  asp-route-folio=@item.Folio value="x" class="boton boton--primario"></td>
+                        <td> <input type="submit" asp-page-handler="CancelarPermisoEmpleado" asp-route-folio=@item.Folio
+                        value="x" class="boton boton--primario"></td>
                     }
                     else
                     {
                         <td>@item.Nomina</td>
-                        @if ((item.Estado == "Solicitado" )|| (item.Estado == "Aprobado (Supervisor)"))
+                        @if ((item.Estado == "Solicitado") || (item.Estado == "Aprobado (Supervisor)"))
                         {
-                        <td> <input type="submit" asp-page-handler="AceptarPermiso" asp-route-folio=@item.Folio value="✓" class="boton boton--primario"></td>
-                        <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x" class="boton boton--primario"></td>
+                            <td> <input type="submit" asp-page-handler="AceptarPermiso" asp-route-folio=@item.Folio value="✓"
+                        class="boton boton--primario"></td>
+                            <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x"
+                        class="boton boton--primario"></td>
                         }
                         else
                         {
                             <td> </td>
-                            <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x" class="boton boton--primario"></td>
+                            <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x"
+                        class="boton boton--primario"></td>
 
                         }
                     }
@@ -134,4 +138,3 @@
         </div>
     </form>
 </main>
-   
