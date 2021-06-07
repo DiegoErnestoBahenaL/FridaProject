@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PermisosEntitiesLib;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.AspNetCore.Http;
 
 
 namespace PermisosWeb.Pages
@@ -22,6 +22,7 @@ namespace PermisosWeb.Pages
         public static long tipoEmpleado { get; set; }
         //Guarda la nomina de empleado que hace login, es una propiedad estatica por que se pasa a la clase permiso cuando ingresa
         public static long Nomina { get; set; }
+        // public dynamic ViewBag { get; }
         //Objeto para hacer la conexion y consultas con la base de datos
         private Permisos db;
 
@@ -63,6 +64,7 @@ namespace PermisosWeb.Pages
                 return RedirectToPage("/permisos");
             }
             //Si el login no fue exitoso, carga la pagina de login
+            Response.WriteAsync("<script>alert('Contraseña o Usuario incorrecto');</script>");
             return Page();
         }
     }
