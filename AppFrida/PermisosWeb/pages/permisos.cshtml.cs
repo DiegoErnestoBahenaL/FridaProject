@@ -305,6 +305,83 @@ namespace PermisosWeb.Pages
                 {
                     return false;
                 }
+                else if (Permiso.TipoPermiso == 3)
+                {
+                   
+
+                    //int cantidadDosHoras = queryPermisos.Count();
+                
+                    string auxFechaFin = DateTime.Now.ToString("dd/MM/yyyy");
+                    char[] quincena = auxFechaFin.ToCharArray(0, 10);
+                     quincena[0] = '1';
+                     quincena[1] = '5';
+
+                    auxFechaFin = new string(quincena);
+
+                    DateTime fechaFinAux = DateTime.Parse(auxFechaFin);
+
+                    if (dateInicio > fechaFinAux )
+                    {
+                        
+                       //Segunda quincena
+
+                       
+                        for (int i = 16; i < 32; i++)
+                        {
+                            
+
+
+                        }  
+                       
+                        // if (cantidadDosHoras == 0 )
+                        // {
+                        //     if (cantidadDosHoras > 1 )
+                        //     {
+                        //         return false;
+                        //     }
+
+                        // }
+                        // else
+                        // {
+                        //     if (cantidadDosHoras > 3 )
+                        //     {
+                        //         return false;
+                        //     } 
+                        // }
+
+
+                    }
+                    else
+                    {
+                         for (int i = 1; i < 16; i++)
+                        {
+                            string day = i.ToString();
+                            
+                            var queryPermisos =
+                            (
+                            from p in db.Permiso
+                            join tp in db.TipoPermisos
+                            on p.TipoPermiso equals tp.IdTipoPermiso
+                            join ep in db.EstadoPermisos
+                            on p.EstadoPermiso equals ep.IdEstadoPermiso
+                            where p.Empleado == IndexModel.Nomina
+                            where p.TipoPermiso == 3
+                            where p.FechaElaboracion == "08/06/2021"
+                            select new
+                            {
+                                Folio = p.Folio,
+                            }
+                            ).ToList();
+                                
+
+                        }  
+
+                    }
+
+
+
+                    
+                }
 
             }
             else if (Permiso.TipoPermiso == 1)
@@ -317,7 +394,12 @@ namespace PermisosWeb.Pages
                 }
             }
 
-         
+              
+
+
+            
+
+
             return true;
         }
 
