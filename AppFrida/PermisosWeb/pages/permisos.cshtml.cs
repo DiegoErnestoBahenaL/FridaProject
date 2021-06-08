@@ -33,6 +33,7 @@ namespace PermisosWeb.Pages
         public long Nomina { get; set; }
         public long tipoEmpleado { get; set; }
         public string Fecha { get; set; }
+        public string fechaHtml { get; set; }
         public long Estado { get; set; }
 
         /// <summary>
@@ -76,6 +77,7 @@ namespace PermisosWeb.Pages
             Nomina = IndexModel.Nomina;
             idArea = queryEmpleado[0].idArea;
             Fecha = DateTime.Now.ToString("dd/MM/yyyy");
+            fechaHtml = DateTime.Now.ToString("yyyy-MM-dd");
 
             //Dependiendo del tipo de empleado es la query que se realiza para traer la infromacion de los permisos
             switch (tipoEmpleado)
@@ -234,46 +236,56 @@ namespace PermisosWeb.Pages
         /// <returns>La misma pagina pero actualizada con la informacion de los permisos</returns>
         public IActionResult OnPostEnviarPermiso()
         {
-            //Si la hora de inicio en el permiso de 2 horas fue a las 7:00
-            if (Permiso.HoraInicio == "7:00")
-            {
-                //la hora final sera las 9:00
-                Permiso.HoraFin = "9:00";
-            }
-            //Si la hora de inicio en el permiso de 2 horas fue a las 13:00
-            else if (Permiso.HoraInicio == "13:00")
-            {
-                //la hora final sera las 15:00
-                Permiso.HoraFin = "15:00";
-            }
-            else //si no se tiene hora de inicio no es permiso de 2 horas 
-            {
-                //entonces el valor sera nulo
-                Permiso.HoraFin = null;
-            }
+            //Empiezan las validaciones
+            if(isValid()){
+                //Si la hora de inicio en el permiso de 2 horas fue a las 7:00
+                if (Permiso.HoraInicio == "7:00")
+                {
+                    //la hora final sera las 9:00
+                    Permiso.HoraFin = "9:00";
+                }
+                //Si la hora de inicio en el permiso de 2 horas fue a las 13:00
+                else if (Permiso.HoraInicio == "13:00")
+                {
+                    //la hora final sera las 15:00
+                    Permiso.HoraFin = "15:00";
+                }
+                else //si no se tiene hora de inicio no es permiso de 2 horas 
+                {
+                    //entonces el valor sera nulo
+                    Permiso.HoraFin = null;
+                }
 
-            //Asignamos a la propiedad de la fecha de justificacion inicio el dato que se recibe del html
-            Permiso.FechaJustificacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).ToString("dd/MM/yyyy");
-            //Asignamos a la propiedad de la fecha de justificacion fin el dato que se recibe del html
-            Permiso.FechaJustificacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).ToString("dd/MM/yyyy");
-            //Asignamos a la propiedad de la fecha de elaboracion el dia en el que se esta agregando el permiso
-            Permiso.FechaElaboracion = DateTime.Now.ToString("dd/MM/yyyy");
-            //agregamos la propiedad de nomina, la misma nomina con la cual se hizo login en el index
-            Permiso.Empleado = IndexModel.Nomina;
-            if (IndexModel.tipoEmpleado == 1) //Si el que agrego un permiso fue la directora
-            {
-                Permiso.EstadoPermiso = 4; //El estado sera aprobado por supervisor ya que ella no tiene supervisor, solo falta que ella acepte su propio permiso
+                //Asignamos a la propiedad de la fecha de justificacion inicio el dato que se recibe del html
+                Permiso.FechaJustificacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).ToString("dd/MM/yyyy");
+                //Asignamos a la propiedad de la fecha de justificacion fin el dato que se recibe del html
+                Permiso.FechaJustificacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).ToString("dd/MM/yyyy");
+                //Asignamos a la propiedad de la fecha de elaboracion el dia en el que se esta agregando el permiso
+                Permiso.FechaElaboracion = DateTime.Now.ToString("dd/MM/yyyy");
+                //agregamos la propiedad de nomina, la misma nomina con la cual se hizo login en el index
+                Permiso.Empleado = IndexModel.Nomina;
+                if (IndexModel.tipoEmpleado == 1) //Si el que agrego un permiso fue la directora
+                {
+                    Permiso.EstadoPermiso = 4; //El estado sera aprobado por supervisor ya que ella no tiene supervisor, solo falta que ella acepte su propio permiso
+                }
+                else //de cualquier otro modo (empleado y supervisor)
+                {
+                    Permiso.EstadoPermiso = 3; //El estado sera solicitado por que debe ser aceptado por el supervisor y la directora
+                }
+                //a la base de datos se agrega un nuevo permiso
+                db.Permiso.Add(Permiso);
+                //se guardan los cambios
+                db.SaveChanges();
+                //carga la misma pagina actualizada con los permnisos
+                return RedirectToPage("/permisos");
+            }else{
+                //Alerta
+                return RedirectToPage("/permisos");
             }
-            else //de cualquier otro modo (empleado y supervisor)
-            {
-                Permiso.EstadoPermiso = 3; //El estado sera solicitado por que debe ser aceptado por el supervisor y la directora
-            }
-            //a la base de datos se agrega un nuevo permiso
-            db.Permiso.Add(Permiso);
-            //se guardan los cambios
-            db.SaveChanges();
-            //carga la misma pagina actualizada con los permnisos
-            return RedirectToPage("/permisos");
+        }
+
+        public bool isValid(){
+            return false;
         }
 
         /// <summary>

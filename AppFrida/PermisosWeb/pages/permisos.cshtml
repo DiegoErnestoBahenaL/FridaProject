@@ -26,7 +26,7 @@
 
         <div class="campo">
             <label asp-for="Permiso.TipoPermiso" class="campo__label">Tipo de Justificación:</label>
-            <select asp-for="Permiso.TipoPermiso">
+            <select asp-for="Permiso.TipoPermiso" required>
                 <option value="" disabled="" selected=""> Elige una opción </option>
                 <option value="1">Permiso Económico</option>
                 <option value="2">Permiso Cumpleaños</option>
@@ -41,12 +41,12 @@
                 <div>
                     <label>Inicio:</label>
                     <input asp-for="Permiso.FechaJustificacionInicio" asp-format="{0:DD/MM/YYYY}" class="campo__field"
-                        type="date" min="2020-02-10" max="2050-12-31">
+                        type="date" min="@Model.fechaHtml" max="2050-12-31" required>
                 </div>
                 <div>
                     <label>Fin:</label>
                     <input asp-for="Permiso.FechaJustificacionFin" asp-format="{0:DD/MM/YYYY}" class="campo__field"
-                        type="date" min="2020-02-10" max="2050-12-31">
+                        type="date" min="@Model.fechaHtml" max="2050-12-31" required>
                 </div>
             </div>
         </div>
