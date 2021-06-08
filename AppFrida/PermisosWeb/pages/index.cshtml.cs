@@ -64,7 +64,7 @@ namespace PermisosWeb.Pages
                 return RedirectToPage("/permisos");
             }
             //Si el login no fue exitoso, carga la pagina de login
-            Response.WriteAsync("<script>alert('Contraseña o Usuario incorrecto');</script>");
+            TempData["AlertMessage"] = "Usuario o Password incorrectos";
             return Page();
         }
     }
