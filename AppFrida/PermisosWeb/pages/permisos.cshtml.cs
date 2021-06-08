@@ -237,7 +237,8 @@ namespace PermisosWeb.Pages
         public IActionResult OnPostEnviarPermiso()
         {
             //Empiezan las validaciones
-            if(isValid()){
+            if (isValid())
+            {
                 //Si la hora de inicio en el permiso de 2 horas fue a las 7:00
                 if (Permiso.HoraInicio == "7:00")
                 {
@@ -278,24 +279,24 @@ namespace PermisosWeb.Pages
                 db.SaveChanges();
                 //carga la misma pagina actualizada con los permnisos
                 return RedirectToPage("/permisos");
-            }else{
-
+            }
+            else
+            {
                 TempData["PermisoMessage"] = "Datos introducidos erroneamente";
                 //Alerta
                 return RedirectToPage("/permisos");
             }
         }
 
-        public bool isValid(){
-
-           
+        public bool isValid()
+        {
             DayOfWeek fechaValidacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).DayOfWeek;
             DayOfWeek fechaValidacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).DayOfWeek;
             DateTime dateInicio = DateTime.Parse(Permiso.FechaJustificacionInicio);
             DateTime dateFin = DateTime.Parse(Permiso.FechaJustificacionFin);
-            if ((fechaValidacionInicio == DayOfWeek.Saturday) || (fechaValidacionInicio == DayOfWeek.Sunday) || (fechaValidacionFin == DayOfWeek.Saturday) || (fechaValidacionFin == DayOfWeek.Sunday) )
-            {   
-                
+            if ((fechaValidacionInicio == DayOfWeek.Saturday) || (fechaValidacionInicio == DayOfWeek.Sunday) || (fechaValidacionFin == DayOfWeek.Saturday) || (fechaValidacionFin == DayOfWeek.Sunday))
+            {
+
                 return false;
             }
             //Si el permiso es de dos horas o cumpleaños
@@ -307,99 +308,85 @@ namespace PermisosWeb.Pages
                 }
                 else if (Permiso.TipoPermiso == 3)
                 {
-                   
-
                     //int cantidadDosHoras = queryPermisos.Count();
-                
                     string auxFechaFin = DateTime.Now.ToString("dd/MM/yyyy");
                     char[] quincena = auxFechaFin.ToCharArray(0, 10);
-                     quincena[0] = '1';
-                     quincena[1] = '5';
-
+                    quincena[0] = '1';
+                    quincena[1] = '5';
                     auxFechaFin = new string(quincena);
-
                     DateTime fechaFinAux = DateTime.Parse(auxFechaFin);
-
-                    if (dateInicio > fechaFinAux )
+                    if (dateInicio > fechaFinAux)
                     {
-                        
-                       //Segunda quincena
-
-                       
+                        //Segunda quincena
                         for (int i = 16; i < 32; i++)
                         {
-                            
-
-
-                        }  
-                       
-                        // if (cantidadDosHoras == 0 )
-                        // {
-                        //     if (cantidadDosHoras > 1 )
-                        //     {
-                        //         return false;
-                        //     }
-
-                        // }
-                        // else
-                        // {
-                        //     if (cantidadDosHoras > 3 )
-                        //     {
-                        //         return false;
-                        //     } 
-                        // }
-
-
+                            string day = i.ToString();
+                            quincena[0] = day[0];
+                            quincena[1] = day[1];
+                            auxFechaFin = new string(quincena);
+                            var queryPermisos =
+                            (
+                                from p in db.Permiso
+                                join tp in db.TipoPermisos
+                                on p.TipoPermiso equals tp.IdTipoPermiso
+                                join ep in db.EstadoPermisos
+                                on p.EstadoPermiso equals ep.IdEstadoPermiso
+                                where p.Empleado == IndexModel.Nomina
+                                where p.TipoPermiso == 3
+                                where p.FechaElaboracion == auxFechaFin
+                                select new
+                                {
+                                    Folio = p.Folio,
+                                }
+                            ).ToList();
+                            if(queryPermisos.Count > 1){
+                                return false;
+                            }
+                        }
                     }
                     else
                     {
-                         for (int i = 1; i < 16; i++)
+                        for (int i = 1; i < 16; i++)
                         {
                             string day = i.ToString();
-                            
+                            if(i > 0 && i < 10){
+                                quincena[0] = '0';
+                                quincena[1] = day[0];
+                                auxFechaFin = new string(quincena);
+                            }else{
+                                quincena[0] = day[0];
+                                quincena[1] = day[1];
+                                auxFechaFin = new string(quincena);
+                            }
                             var queryPermisos =
                             (
-                            from p in db.Permiso
-                            join tp in db.TipoPermisos
-                            on p.TipoPermiso equals tp.IdTipoPermiso
-                            join ep in db.EstadoPermisos
-                            on p.EstadoPermiso equals ep.IdEstadoPermiso
-                            where p.Empleado == IndexModel.Nomina
-                            where p.TipoPermiso == 3
-                            where p.FechaElaboracion == "08/06/2021"
-                            select new
-                            {
-                                Folio = p.Folio,
-                            }
+                                from p in db.Permiso
+                                join tp in db.TipoPermisos
+                                on p.TipoPermiso equals tp.IdTipoPermiso
+                                join ep in db.EstadoPermisos
+                                on p.EstadoPermiso equals ep.IdEstadoPermiso
+                                where p.Empleado == IndexModel.Nomina
+                                where p.TipoPermiso == 3
+                                where p.FechaElaboracion == auxFechaFin
+                                select new
+                                {
+                                    Folio = p.Folio,
+                                }
                             ).ToList();
-                                
-
-                        }  
-
+                            if(queryPermisos.Count > 1){
+                                return false;
+                            }
+                        }
                     }
-
-
-
-                    
                 }
-
             }
             else if (Permiso.TipoPermiso == 1)
             {
-                
-
                 if ((dateFin - dateInicio).TotalDays > 2)
                 {
                     return false;
                 }
             }
-
-              
-
-
-            
-
-
             return true;
         }
 
