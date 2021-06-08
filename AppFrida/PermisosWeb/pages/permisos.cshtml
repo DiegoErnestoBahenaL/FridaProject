@@ -69,6 +69,8 @@
         <div class="alinear-derecha">
             <input type="submit" asp-page-handler="EnviarPermiso" value="enviar" class="boton boton--primario">
         </div>
+    </form>
+    <form  method="POST">
 
         <table class="campo">
 
@@ -137,4 +139,16 @@
             <input type="submit" asp-page-handler="Salir" value="Salir" class="boton boton--primario">
         </div>
     </form>
+@{
+    var message = TempData["PermisoMessage"] ?? string.Empty;
+}
+
+<script type="text/javascript">
+    var message = '@message';
+    if(message)
+        alert(message);
+</script>
+
+
+
 </main>

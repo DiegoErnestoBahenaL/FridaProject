@@ -279,13 +279,46 @@ namespace PermisosWeb.Pages
                 //carga la misma pagina actualizada con los permnisos
                 return RedirectToPage("/permisos");
             }else{
+
+                TempData["PermisoMessage"] = "Datos introducidos erroneamente";
                 //Alerta
                 return RedirectToPage("/permisos");
             }
         }
 
         public bool isValid(){
-            return false;
+
+           
+            DayOfWeek fechaValidacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).DayOfWeek;
+            DayOfWeek fechaValidacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).DayOfWeek;
+            DateTime dateInicio = DateTime.Parse(Permiso.FechaJustificacionInicio);
+            DateTime dateFin = DateTime.Parse(Permiso.FechaJustificacionFin);
+            if ((fechaValidacionInicio == DayOfWeek.Saturday) || (fechaValidacionInicio == DayOfWeek.Sunday) || (fechaValidacionFin == DayOfWeek.Saturday) || (fechaValidacionFin == DayOfWeek.Sunday) )
+            {   
+                
+                return false;
+            }
+            //Si el permiso es de dos horas o cumpleaños
+            else if (Permiso.TipoPermiso == 2 || Permiso.TipoPermiso == 3)
+            {
+                if (Permiso.FechaJustificacionInicio != Permiso.FechaJustificacionFin)
+                {
+                    return false;
+                }
+
+            }
+            else if (Permiso.TipoPermiso == 1)
+            {
+                
+
+                if ((dateFin - dateInicio).TotalDays > 2)
+                {
+                    return false;
+                }
+            }
+
+         
+            return true;
         }
 
         /// <summary>
