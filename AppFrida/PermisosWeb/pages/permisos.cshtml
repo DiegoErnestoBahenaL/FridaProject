@@ -108,8 +108,17 @@
                     <td>@item.Estado</td>
                     @if (Model.tipoEmpleado == 4)
                     {
-                        <td> <input type="submit" asp-page-handler="CancelarPermisoEmpleado" asp-route-folio=@item.Folio
-                        value="x" class="boton boton--primario"></td>
+                        if(item.Estado == "Aceptado")
+                        {
+                          <td> </td>
+                        }
+                        else
+                        {
+                            <td> <input type="submit" asp-page-handler="CancelarPermisoEmpleado" asp-route-folio=@item.Folio
+                            value="x" class="boton boton--primario"></td>
+                        }
+                
+
                     }
                     else
                     {
@@ -123,10 +132,18 @@
                         }
                         else
                         {
-                            <td> </td>
-                            <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x"
-                        class="boton boton--primario"></td>
+                              if(item.Estado == "Aceptado")
+                            {
+                                <td> </td>
+                                <td> </td>
+                            }
+                            else
+                            {
 
+                                <td> </td>
+                                <td> <input type="submit" asp-page-handler="CancelarPermiso" asp-route-folio=@item.Folio value="x"
+                                class="boton boton--primario"></td>
+                            }
                         }
                     }
                 </tr>

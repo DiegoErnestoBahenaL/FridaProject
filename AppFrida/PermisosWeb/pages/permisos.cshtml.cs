@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace PermisosWeb.Pages
 {
@@ -305,11 +306,40 @@ namespace PermisosWeb.Pages
             //Almacenan el numero de permisos de dos horas que existen en las 2 diferentes quincenas de cada mes
             int primeraQuincena = 0, segundaQuincena = 0;
             //Si en alguna de las fechas a justificar el permiso esta en fin de semana
+            
+            
+            
             if ((fechaValidacionInicio == DayOfWeek.Saturday) || (fechaValidacionInicio == DayOfWeek.Sunday) || (fechaValidacionFin == DayOfWeek.Saturday) || (fechaValidacionFin == DayOfWeek.Sunday))
             {
+               
+               
                 //El permiso es invalido
                 return false;
             }
+
+             var queryPermisoValido =
+                            (
+                                from p in db.Permiso
+                                join tp in db.TipoPermisos
+                                on p.TipoPermiso equals tp.IdTipoPermiso
+                                join ep in db.EstadoPermisos
+                                on p.EstadoPermiso equals ep.IdEstadoPermiso
+                                where p.Empleado == IndexModel.Nomina
+                                where p.FechaJustificacionInicio  == dateInicio.ToString("dd/MM/yyyy")
+                                select new
+                                {
+                                    Folio = p.Folio,
+                                }
+                            ).ToList();
+
+            if(queryPermisoValido.Count != 0)
+            {
+                                 
+                return false;
+            }
+            
+
+          
             //Si el permiso es de dos horas o cumpleaños
             else if (Permiso.TipoPermiso == 2 || Permiso.TipoPermiso == 3)
             {
@@ -425,6 +455,89 @@ namespace PermisosWeb.Pages
                     //Si es mayor de 3 es un permiso invalido
                     return false;
                 }
+                string auxFechaFin = dateInicio.ToString("dd/MM/yyyy");
+                 //Convertimos el string en un arreglo de chars para modificar el dia y poder comparalo para saber en que quincena se encuentra del ems, pero el mes y el a;o sigue siendo el mismo que la fecha de justificacion
+                char[] mes = auxFechaFin.ToCharArray(0, 10); 
+                 
+               
+               
+                
+                for (int i = 1; i <= DateTime.DaysInMonth(dateInicio.Year, dateInicio.Month); i++)
+                        {
+                            //pasamos el contador a un string para poder hacer parse y cambiar de formato en la fecha para poder hacer una consulta correcta
+                            string day = i.ToString();
+
+                            if(i > 0 && i < 10)
+                            {
+                                mes[0] = '0';
+                                mes[1] = day[0];
+                                auxFechaFin = new string(mes);
+                            }
+                            else
+                            {
+                                mes[0] = day[0];
+                                mes[1] = day[1];
+                                auxFechaFin = new string(mes);
+                            }
+
+ 
+                            //hacemos una query en cada dia de la segunda quincena para determinar si ya existen permisos en dicha quincena
+                            var queryPermisosMes =
+                            (
+                                from p in db.Permiso
+                                join tp in db.TipoPermisos
+                                on p.TipoPermiso equals tp.IdTipoPermiso
+                                join ep in db.EstadoPermisos
+                                on p.EstadoPermiso equals ep.IdEstadoPermiso
+                                where p.Empleado == IndexModel.Nomina
+                                where p.TipoPermiso == 1
+                                where p.FechaJustificacionInicio == auxFechaFin
+                                select new
+                                {
+                                    Folio = p.Folio,
+                                }
+                            ).ToList();
+                            //Si encontro un permiso
+                            if (i == 28)
+                            {
+                                int a = 0;
+                            }
+
+                            if(queryPermisosMes.Count > 0){
+                                //aumenta el contador
+                                return false;
+                            }
+                        }
+
+
+  
+                            var queryPermisos =
+                            (
+                                from p in db.Permiso
+                                join tp in db.TipoPermisos
+                                on p.TipoPermiso equals tp.IdTipoPermiso
+                                join ep in db.EstadoPermisos
+                                on p.EstadoPermiso equals ep.IdEstadoPermiso
+                                where p.Empleado == IndexModel.Nomina
+                                where p.TipoPermiso == 1
+                           
+                                select new
+                                {
+                                    Folio = p.Folio,
+                                }
+                            ).ToList();
+                            //Si encontro un permiso
+
+                if(queryPermisos.Count > 8)
+                {
+                    //aumenta el contador
+                    return false;
+                }
+
+
+                       
+
+
             }
             return true;
         }
