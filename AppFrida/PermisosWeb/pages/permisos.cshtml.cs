@@ -236,7 +236,7 @@ namespace PermisosWeb.Pages
         /// <returns>La misma pagina pero actualizada con la informacion de los permisos</returns>
         public IActionResult OnPostEnviarPermiso()
         {
-            //Empiezan las validaciones
+            //Checa si el permiso es valido antes de gnerarlo
             if (isValid())
             {
                 //Si la hora de inicio en el permiso de 2 horas fue a las 7:00
@@ -280,52 +280,73 @@ namespace PermisosWeb.Pages
                 //carga la misma pagina actualizada con los permnisos
                 return RedirectToPage("/permisos");
             }
+            //Si no es valido
             else
             {
+                //Alerta al usuario que su permiso es invalido
                 TempData["PermisoMessage"] = "Datos introducidos erroneamente";
-                //Alerta
+                //Lo redirige a la pagina
                 return RedirectToPage("/permisos");
             }
         }
 
+        /// <summary>
+        /// Determina mediante condiciones todas las restricciones necesarias para generar un permiso
+        /// </summary>
+        /// <returns>Si el permiso es valido, de acuerdo a las condiciones retorna un true, si no un false</returns>
         public bool isValid()
         {
+            //Almacena el dia de la semana en el que se solicita el permiso para verificar si no se hizo en fin de semana
             DayOfWeek fechaValidacionInicio = DateTime.Parse(Permiso.FechaJustificacionInicio).DayOfWeek;
             DayOfWeek fechaValidacionFin = DateTime.Parse(Permiso.FechaJustificacionFin).DayOfWeek;
+            //Almacena las fechas de justificaciones de inicio y fin en una instancia de la clase datetime para no tener que utilizar el objeto de la clase Permiso con propiedad string, ya que funciones de datetime son requeridas para las validaciones
             DateTime dateInicio = DateTime.Parse(Permiso.FechaJustificacionInicio);
             DateTime dateFin = DateTime.Parse(Permiso.FechaJustificacionFin);
+            //Almacenan el numero de permisos de dos horas que existen en las 2 diferentes quincenas de cada mes
             int primeraQuincena = 0, segundaQuincena = 0;
+            //Si en alguna de las fechas a justificar el permiso esta en fin de semana
             if ((fechaValidacionInicio == DayOfWeek.Saturday) || (fechaValidacionInicio == DayOfWeek.Sunday) || (fechaValidacionFin == DayOfWeek.Saturday) || (fechaValidacionFin == DayOfWeek.Sunday))
             {
-
+                //El permiso es invalido
                 return false;
             }
             //Si el permiso es de dos horas o cumpleaños
             else if (Permiso.TipoPermiso == 2 || Permiso.TipoPermiso == 3)
             {
+                //Estos tipos de permisos solo tienen una duracion de 1 dia asi que si la fecha de justificacion no es la misma
                 if (Permiso.FechaJustificacionInicio != Permiso.FechaJustificacionFin)
                 {
+                    //quiere decir que abarca mas de un dia y por lo tanto el permiso es invalido
                     return false;
                 }
-                else if (Permiso.TipoPermiso == 3)
+                else if (Permiso.TipoPermiso == 3) //Si el permiso es de 2 horas y esta correcto el dia a justificar
                 {
-                    //int cantidadDosHoras = queryPermisos.Count();
+                    //Se tiene que analizar que no sean mas de 2 permisos por semana
+                    //Guardamos en un string auxiliar la fecha de justificacion con el formato que acepta DateTime para hacer parsse despues
                     string auxFechaFin = dateInicio.ToString("yyyy-MM-dd");
-                    char[] quincena = auxFechaFin.ToCharArray(0, 10);
+                    //Convertimos el string en un arreglo de chars para modificar el dia y poder comparalo para saber en que quincena se encuentra del ems, pero el mes y el a;o sigue siendo el mismo que la fecha de justificacion
+                    char[] quincena = auxFechaFin.ToCharArray(0, 10); 
+                    //Cambiamos el dia por el 15
                     quincena[8] = '1';
                     quincena[9] = '5';
+                    //Convertimos el arreglo de char nuevamente en strings
                     auxFechaFin = new string(quincena);
+                    //Convertimos el objeto string en DateTime para poder hacer una comparacion y determinar en que quincena se encuentra
                     DateTime fechaFinAux = DateTime.Parse(auxFechaFin);
+                    //Si mi fecha de justificacion es mayor al dia 15 de ese mismo mes y a;o quiere decir que esta en la segyunda quincena
                     if (dateInicio > fechaFinAux)
                     {      
                         //Segunda quincena
+                        //Recorremos todos los dias de la segunda quincena, desde el 16 hasta el ultimo dia del mes
                         for (int i = 16; i <= DateTime.DaysInMonth(dateInicio.Year, dateInicio.Month); i++)
                         {
+                            //pasamos el contador a un string para poder hacer parse y cambiar de formato en la fecha para poder hacer una consulta correcta
                             string day = i.ToString();
                             quincena[8] = day[0];
                             quincena[9] = day[1];
                             auxFechaFin = new string(quincena);
                             auxFechaFin = DateTime.Parse(auxFechaFin).ToString("dd/MM/yyyy");
+                            //hacemos una query en cada dia de la segunda quincena para determinar si ya existen permisos en dicha quincena
                             var queryPermisos =
                             (
                                 from p in db.Permiso
@@ -341,19 +362,25 @@ namespace PermisosWeb.Pages
                                     Folio = p.Folio,
                                 }
                             ).ToList();
+                            //Si encontro un permiso
                             if(queryPermisos.Count > 0){
+                                //aumenta el contador
                                 segundaQuincena++;
                             }
                         }
+                        //Si ya que termino existir=eron mas de 2 permisos
                         if(segundaQuincena > 1){
+                            //El permiso queda invalido
                             return false;
                         }
                     }
                     else
                     {
+                        //Primera quincena
                         for (int i = 1; i < 16; i++)
                         {
                             string day = i.ToString();
+                            //Esta condicion es para los dias donde en el formato de la fecha se antepone un 0
                             if(i > 0 && i < 10){
                                 quincena[8] = '0';
                                 quincena[9] = day[0];
@@ -389,10 +416,13 @@ namespace PermisosWeb.Pages
                     }
                 }
             }
+            //Si el tipo de permiso es economico 
             else if (Permiso.TipoPermiso == 1)
             {
+                //Se determina que la duracion de este no sea mayor de 3
                 if ((dateFin - dateInicio).TotalDays > 2)
                 {
+                    //Si es mayor de 3 es un permiso invalido
                     return false;
                 }
             }
