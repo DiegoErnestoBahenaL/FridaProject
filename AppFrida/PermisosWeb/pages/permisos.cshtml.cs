@@ -456,7 +456,7 @@ namespace PermisosWeb.Pages
                             join ep in db.EstadoPermisos
                             on p.EstadoPermiso equals ep.IdEstadoPermiso
                             where p.Empleado == IndexModel.Nomina
-                            where p.TipoPermiso == 1
+                            where p.TipoPermiso == 2
 
                             select new
                             {
